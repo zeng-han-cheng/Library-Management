@@ -1,2 +1,0 @@
-package com.library.server.service; import com.library.common.model.PageResult; import com.library.pojo.dto.BorrowDTO; import com.library.pojo.dto.ReturnDTO; import com.library.pojo.vo.BorrowVO; import java.util.List;
-public interface BorrowService { void borrow(BorrowDTO dto); void returnBook(ReturnDTO dto); PageResult<BorrowVO> page(Long readerId,int page,int size); List<BorrowVO> timeline(Long readerId); }

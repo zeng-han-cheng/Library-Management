@@ -1,2 +1,0 @@
-package com.library.server.service.impl; import com.library.common.util.DeepSeekClient; import com.library.server.service.AIService; import org.springframework.stereotype.Service;
-@Service public class AIServiceImpl implements AIService { private final DeepSeekClient client; public AIServiceImpl(DeepSeekClient client){this.client=client;} public String readerRecommend(String prompt){return client.chat("你是图书馆推荐助手，请根据读者需求推荐图书并说明理由："+prompt);} public String adminAdvice(String prompt){return client.chat("你是图书馆运营顾问，请分析库存和运营问题并给出可执行建议："+prompt);} }

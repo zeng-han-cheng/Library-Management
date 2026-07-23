@@ -1,2 +1,0 @@
-package com.library.server.mapper; import com.library.pojo.entity.Reader; import org.apache.ibatis.annotations.Param; import java.util.List;
-public interface ReaderMapper { Reader findByUsername(String username); Reader findById(Long id); List<Reader> page(@Param("keyword") String keyword,@Param("offset") int offset,@Param("limit") int limit); long count(String keyword); int insert(Reader item); int update(Reader item); int updatePassword(@Param("id") Long id,@Param("password") String password); int delete(Long id); int countBorrowing(Long readerId); }
