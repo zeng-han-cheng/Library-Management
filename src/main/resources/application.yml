@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: library-server
+  config:
+    import: optional:file:./config/application-local.yml
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:library_management}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: ${DB_USERNAME:root}

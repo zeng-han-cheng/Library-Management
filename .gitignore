@@ -8,4 +8,6 @@ dist/
 *.log
 server-debug*.log
 port-*.log
+verification-*.log
+config/application-local.yml
 *.iml

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
+const adminPaths = ['/books', '/categories', '/readers', '/statistics']
 const routes = [{ path: '/login', component: Login }, { path: '/', component: Home, children: [
   { path: '', redirect: '/dashboard' }, { path: 'dashboard', component: () => import('../views/Dashboard.vue') },
   { path: 'books', component: () => import('../views/Books.vue') }, { path: 'categories', component: () => import('../views/Categories.vue') },
@@ -9,5 +10,9 @@ const routes = [{ path: '/login', component: Login }, { path: '/', component: Ho
   { path: 'ai', component: () => import('../views/AI.vue') }
 ] }]
 const router = createRouter({ history: createWebHistory(), routes })
-router.beforeEach(to => { if (to.path !== '/login' && !localStorage.getItem('library_token')) return '/login' })
+router.beforeEach(to => {
+  if (to.path !== '/login' && !localStorage.getItem('library_token')) return '/login'
+  const user = JSON.parse(localStorage.getItem('library_user') || 'null')
+  if (user?.role === 'READER' && adminPaths.includes(to.path)) return '/dashboard'
+})
 export default router

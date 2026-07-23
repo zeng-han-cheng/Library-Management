@@ -1,2 +1,2 @@
 package com.library.service; import com.library.common.model.PageResult; import com.library.model.dto.BookQuery; import com.library.model.entity.Book; import com.library.model.vo.BookVO; import java.util.List; import java.util.Map;
-public interface BookService { PageResult<BookVO> page(BookQuery q); Book get(Long id); void save(Book item); void update(Book item); void delete(Long id); List<Map<String,Object>> stats(); }
+public interface BookService { PageResult<BookVO> page(BookQuery q); Book get(Long id); void save(Book item); void update(Book item); void delete(Long id); List<Map<String,Object>> stats(); Map<String, Object> overview(); Map<String, Object> availableOverview(); void repairInventory(); }

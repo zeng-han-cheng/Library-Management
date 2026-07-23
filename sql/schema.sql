@@ -89,4 +89,5 @@ CREATE TABLE borrow_record (
 ) ENGINE=InnoDB COMMENT='借阅记录表';
 
 INSERT INTO admin(username,password,real_name) VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '系统管理员');
+INSERT INTO reader(reader_no,username,password,real_name,status) VALUES ('R0001', 'reader', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '默认读者', 1);
 INSERT INTO category(name,description) VALUES ('文学','文学小说与散文'),('计算机','计算机技术类图书'),('历史','历史与传记');
