@@ -6,3 +6,6 @@ dist/
 .idea/workspace.xml
 .env
 *.log
+server-debug*.log
+port-*.log
+*.iml

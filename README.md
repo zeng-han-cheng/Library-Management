@@ -12,4 +12,4 @@
 
 ## 前端启动
 
-在 `frontend` 目录执行 `npm install` 和 `npm run dev`。生产构建使用 `npm run build`，Nginx 示例见 `nginx/nginx.conf`。
+在 `frontend` 目录执行 `npm install` 和 `npm run dev`。后端默认端口为 `8081`，生产构建使用 `npm run build`，Nginx 示例见 `nginx/nginx.conf`。
