@@ -1,0 +1,2 @@
+package com.library.server.mapper; import com.library.pojo.entity.BorrowRecord; import com.library.pojo.vo.BorrowVO; import org.apache.ibatis.annotations.Param; import java.util.List;
+public interface BorrowMapper { BorrowRecord findById(Long id); List<BorrowVO> page(@Param("readerId") Long readerId,@Param("offset") int offset,@Param("limit") int limit); long count(@Param("readerId") Long readerId); int insert(BorrowRecord item); int returnBook(BorrowRecord item); List<BorrowVO> timeline(Long readerId); }

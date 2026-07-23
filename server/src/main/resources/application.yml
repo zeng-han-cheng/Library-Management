@@ -1,0 +1,27 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: library-server
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:library_management}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.library.pojo.entity,com.library.pojo.vo
+  configuration:
+    map-underscore-to-camel-case: true
+security:
+  jwt:
+    secret: ${JWT_SECRET:library-management-jwt-secret-change-me-2026}
+    expiration: ${JWT_EXPIRATION:86400000}
+deepseek:
+  api-key: ${DEEPSEEK_API_KEY:}
+  endpoint: ${DEEPSEEK_ENDPOINT:https://api.deepseek.com/chat/completions}
+  model: ${DEEPSEEK_MODEL:deepseek-chat}
+  timeout-ms: ${DEEPSEEK_TIMEOUT_MS:10000}
+logging:
+  level:
+    com.library.server.mapper: debug

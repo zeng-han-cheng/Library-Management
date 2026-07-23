@@ -1,0 +1,2 @@
+package com.library.server.mapper; import com.library.pojo.entity.Admin; import org.apache.ibatis.annotations.Param; import java.util.List;
+public interface AdminMapper { Admin findByUsername(@Param("username") String username); Admin findById(Long id); List<Admin> page(@Param("keyword") String keyword,@Param("offset") int offset,@Param("limit") int limit); long count(@Param("keyword") String keyword); int insert(Admin item); int update(Admin item); int delete(Long id); }

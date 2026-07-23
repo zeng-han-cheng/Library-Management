@@ -1,0 +1,2 @@
+package com.library.server.service; import com.library.common.model.PageResult; import com.library.pojo.dto.BookQuery; import com.library.pojo.entity.Book; import com.library.pojo.vo.BookVO; import java.util.List; import java.util.Map;
+public interface BookService { PageResult<BookVO> page(BookQuery q); Book get(Long id); void save(Book item); void update(Book item); void delete(Long id); List<Map<String,Object>> stats(); }

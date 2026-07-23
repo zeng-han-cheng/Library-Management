@@ -1,0 +1,2 @@
+<template><div class="page-card"><h2>统计分析</h2><el-table :data="rows"><el-table-column prop="categoryName" label="分类"/><el-table-column prop="bookCount" label="图书数量"/><el-table-column prop="totalStock" label="总库存"/><el-table-column prop="availableStock" label="可借库存"/></el-table></div></template>
+<script setup>import {ref,onMounted} from 'vue';import http from '../api/http';const rows=ref([]);onMounted(async()=>{const r=await http.get('/books/stats');rows.value=r.data})</script>
