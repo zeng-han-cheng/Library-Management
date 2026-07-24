@@ -47,6 +47,11 @@ public class BookController {
         return ApiResult.success(service.availableOverview());
     }
 
+    @GetMapping("/category-overview")
+    public ApiResult<List<Map<String, Object>>> categoryOverview() {
+        return ApiResult.success(service.stats());
+    }
+
     @PostMapping
     @RequireRole(RoleConstant.ADMIN)
     public ApiResult<Void> save(@Valid @RequestBody Book book) {

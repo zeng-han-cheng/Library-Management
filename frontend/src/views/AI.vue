@@ -16,20 +16,10 @@
         <div v-if="isAdmin" class="quick-prompts">
           <button v-for="item in adminPrompts" :key="item" type="button" @click="prompt = item">{{ item }}</button>
         </div>
-        <el-input
-          v-model="prompt"
-          type="textarea"
-          :rows="8"
-          :placeholder="isAdmin ? '例如：分析当前库存和借阅情况，给出本周采购与运营优先级。' : '例如：我喜欢科幻和人工智能，希望推荐适合周末阅读的书。'"
-          maxlength="1000"
-          show-word-limit
-          @keydown.ctrl.enter.prevent="ask"
-        />
+        <el-input v-model="prompt" type="textarea" :rows="8" :placeholder="isAdmin ? '例如：分析当前库存和借阅情况，给出本周采购与运营优先级。' : '例如：我喜欢科幻和人工智能，希望推荐适合周末阅读的书。'" maxlength="1000" show-word-limit @keydown.ctrl.enter.prevent="ask" />
         <div class="form-footer">
           <span>Ctrl + Enter 快速生成</span>
-          <el-button type="primary" :loading="loading" @click="ask">
-            {{ isAdmin ? '生成运营建议' : '获取图书推荐' }} <span class="button-arrow">→</span>
-          </el-button>
+          <el-button type="primary" :loading="loading" @click="ask">{{ isAdmin ? '生成运营建议' : '获取图书推荐' }} <span class="button-arrow">→</span></el-button>
         </div>
       </div>
 
@@ -39,7 +29,13 @@
             <div><span class="eyebrow">AI RESPONSE</span><h3>智能助手回复</h3></div>
             <span class="answer-badge">已生成</span>
           </div>
-          <div class="answer-content">{{ answer }}</div>
+          <div class="answer-content">
+            <template v-for="(block, index) in answerBlocks" :key="`${block.type}-${index}`">
+              <h4 v-if="block.type === 'heading'">{{ block.text }}</h4>
+              <div v-else-if="block.type === 'bullet'" class="answer-item"><span class="item-dot"></span><span>{{ block.text }}</span></div>
+              <p v-else>{{ block.text }}</p>
+            </template>
+          </div>
           <el-button class="copy-button" link @click="copyAnswer">复制结果</el-button>
         </template>
         <template v-else>
@@ -68,8 +64,24 @@ const adminPrompts = [
   '结合热门图书和分类数据，给出下一轮馆藏优化建议。'
 ]
 
+const answerBlocks = computed(() => {
+  const lines = answer.value.split(/\r?\n/).map(line => line.trim()).filter(Boolean)
+  return lines.map(line => {
+    if (/^(#{1,3}\s*|[一二三四五六七八九十]+、)/.test(line)) {
+      const text = line.replace(/^#{1,3}\s*/, '')
+      return { type: 'heading', text }
+    }
+    if (/^([-*•]|\d+[.)、])\s*/.test(line)) return { type: 'bullet', text: line.replace(/^([-*•]|\d+[.)、])\s*/, '') }
+    return { type: 'paragraph', text: line }
+  })
+})
+
 async function ask() {
   if (loading.value) return
+  if (!prompt.value.trim()) {
+    ElMessage.warning(isAdmin.value ? '请描述需要分析的运营问题' : '请先填写你的阅读需求')
+    return
+  }
   loading.value = true
   try {
     const response = await http.post(isAdmin.value ? '/ai/advice' : '/ai/recommend', { prompt: prompt.value.trim() })
@@ -93,29 +105,11 @@ async function copyAnswer() {
 </script>
 
 <style scoped>
-.ai-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.ai-heading h2 { margin: 8px 0; }
-.ai-heading p { margin: 0; color: #7b879c; }
+.ai-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }.ai-heading h2 { margin: 8px 0; }.ai-heading p { margin: 0; color: #7b879c; }
 .ai-orb, .empty-orb { display: grid; width: 76px; height: 76px; place-items: center; color: #fff; border-radius: 25px; background: linear-gradient(135deg, #4f46e5, #a78bfa); box-shadow: 0 15px 28px rgba(79, 70, 229, .25); font-size: 30px; }
-.ai-layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 20px; }
-.ai-form-card, .ai-answer-card { min-height: 420px; }
-.form-label { display: flex; align-items: center; gap: 9px; color: #334155; font-size: 15px; font-weight: 800; }
-.label-icon { display: grid; width: 28px; height: 28px; place-items: center; color: #6366f1; border-radius: 9px; background: #eef2ff; }
-.tip { margin: 14px 0 16px; color: #8490a5; font-size: 13px; line-height: 1.6; }
-.quick-prompts { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-.quick-prompts button { padding: 7px 10px; color: #5b5bd6; border: 1px solid #e0e7ff; border-radius: 9px; background: #f8f9ff; cursor: pointer; font-size: 12px; text-align: left; }
-.quick-prompts button:hover { border-color: #a5b4fc; background: #eef2ff; }
-.form-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 17px; color: #9aa5b8; font-size: 11px; }
-.button-arrow { margin-left: 12px; font-size: 16px; }
-.ai-answer-card { display: flex; flex-direction: column; }
-.ai-answer-card.empty { align-items: center; justify-content: center; text-align: center; }
-.empty-orb { width: 62px; height: 62px; margin-bottom: 18px; border-radius: 20px; font-size: 25px; }
-.ai-answer-card.empty h3 { margin-bottom: 8px; }
-.ai-answer-card.empty p { max-width: 260px; margin: 0; color: #96a1b4; font-size: 13px; line-height: 1.7; }
-.answer-head { display: flex; justify-content: space-between; align-items: flex-start; }
-.answer-head h3 { margin: 8px 0 0; }
-.answer-badge { padding: 7px 10px; color: #4f46e5; border-radius: 20px; background: #eef2ff; font-size: 11px; font-weight: 700; }
-.answer-content { overflow: auto; max-height: 470px; margin-top: 24px; padding: 18px; color: #475569; border: 1px solid #edf0f7; border-radius: 14px; background: #fafbff; white-space: pre-wrap; line-height: 1.9; }
-.copy-button { align-self: flex-end; margin-top: 10px; color: #6366f1; }
-@media (max-width: 800px) { .ai-layout { grid-template-columns: 1fr; } .ai-orb { width: 58px; height: 58px; } .form-footer { align-items: flex-start; flex-direction: column; } }
+.ai-layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 20px; }.ai-form-card, .ai-answer-card { min-height: 420px; }.form-label { display: flex; align-items: center; gap: 9px; color: #334155; font-size: 15px; font-weight: 800; }.label-icon { display: grid; width: 28px; height: 28px; place-items: center; color: #6366f1; border-radius: 9px; background: #eef2ff; }.tip { margin: 14px 0 16px; color: #8490a5; font-size: 13px; line-height: 1.6; }
+.quick-prompts { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }.quick-prompts button { padding: 7px 10px; color: #5b5bd6; border: 1px solid #e0e7ff; border-radius: 9px; background: #f8f9ff; cursor: pointer; font-size: 12px; text-align: left; }.quick-prompts button:hover { border-color: #a5b4fc; background: #eef2ff; }
+.form-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 17px; color: #9aa5b8; font-size: 11px; }.button-arrow { margin-left: 12px; font-size: 16px; }.ai-answer-card { display: flex; flex-direction: column; }.ai-answer-card.empty { align-items: center; justify-content: center; text-align: center; }.empty-orb { width: 62px; height: 62px; margin-bottom: 18px; border-radius: 20px; font-size: 25px; }.ai-answer-card.empty h3 { margin-bottom: 8px; }.ai-answer-card.empty p { max-width: 260px; margin: 0; color: #96a1b4; font-size: 13px; line-height: 1.7; }
+.answer-head { display: flex; justify-content: space-between; align-items: flex-start; }.answer-head h3 { margin: 8px 0 0; }.answer-badge { padding: 7px 10px; color: #4f46e5; border-radius: 20px; background: #eef2ff; font-size: 11px; font-weight: 700; }.answer-content { overflow: auto; max-height: 470px; margin-top: 24px; padding: 18px 20px; color: #475569; border: 1px solid #edf0f7; border-radius: 14px; background: #fafbff; line-height: 1.7; }.answer-content h4 { margin: 0 0 12px; color: #27334d; font-size: 14px; }.answer-content h4:not(:first-child) { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e9edf5; }.answer-content p { margin: 0 0 10px; }.answer-item { display: flex; gap: 9px; margin: 8px 0; }.item-dot { flex: 0 0 6px; width: 6px; height: 6px; margin-top: 9px; border-radius: 50%; background: #818cf8; }.copy-button { align-self: flex-end; margin-top: 10px; color: #6366f1; }
+@media (max-width: 800px) { .ai-layout { grid-template-columns: 1fr; }.ai-orb { width: 58px; height: 58px; }.form-footer { align-items: flex-start; flex-direction: column; } }
 </style>
