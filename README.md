@@ -71,7 +71,7 @@ $env:DB_PASSWORD = "123456"
 $env:JWT_SECRET = "replace-with-a-long-random-secret-in-production"
 ```
 
-DeepSeek 功能可选。需要启用时再设置：
+DeepSeek AI 功能可选。需要启用时设置：
 
 ```powershell
 $env:DEEPSEEK_API_KEY = "your-deepseek-api-key"
@@ -86,7 +86,7 @@ deepseek:
 
 该本地配置文件已被 Git 忽略。
 
-不要将真实数据库密码、JWT 密钥或 DeepSeek Key 提交到 Git 仓库。
+不要将真实数据库密码、JWT 密钥或 AI API Key 提交到 Git 仓库。
 
 ### 3. 启动后端
 
